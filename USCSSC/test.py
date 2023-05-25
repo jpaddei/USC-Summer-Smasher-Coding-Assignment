@@ -74,10 +74,6 @@ db: List[Item] = [
 
 inventory = []
 
-@app.get("/")
-def read_root():
-    return {"hello": "existence"}
-
 @app.get("/api/v1/items")
 def read_item():
     return db
