@@ -78,24 +78,24 @@ inventory = []
 def read_item():
     return db
 
-# add product to inventory
+# add product to db
 @app.post("/api/v1/items")
 def add_item(item: Item):
-    inventory.append(item)
+    db.append(item)
     return {"name", item.name}
 
-# delete product from inventory
+# delete product from db
 @app.delete("/api/v1/items/{id}")
 def delete_item(id: UUID):
-    for item in inventory:
+    for item in db:
         if item.id == id:
-            inventory.remove(item)
+            db.remove(item)
             return
         
-# update quantity of item in inventory
+# update quantity of item in db
 @app.put("/api/v1/items/{id}/qty")
 def increment_item(id: UUID, qty: int):
-    for item in inventory:
+    for item in db:
         if item.id == id:
             item.qty += qty
             return item.qty
@@ -103,15 +103,26 @@ def increment_item(id: UUID, qty: int):
 # update field/description of product
 @app.put("/api/v1/items/{id}")
 def update_item(id: UUID, item: Item):
-    for i, item in enumerate(inventory):
-        if item.id == id:
-            inventory[i] = item
-            return inventory[i]
+    return
 
-# search inventory
-@app.get("/api/vi/items/inventory")
-def search_items():
+# search db
+@app.get("/api/vi/items/db")
+def search_items(query):
     results = []
-    for item in inventory:
-        results.append(item)
-        return results
+    for item in db:
+        if query.lower() in item.name.lower():
+            results.append(item)
+        elif query.lower() in item.variant.lower():
+            results.append(item)
+        elif query.lower() in item.sku.lower():
+            results.append(item)   
+        elif query.lower() in item.description.lower():
+            results.append(item)
+        elif query in str(item.qty):
+            results.append(item)
+        elif query in str(item.price):
+            results.append(item)
+            
+
+    
+    return results
