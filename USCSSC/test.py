@@ -1,13 +1,14 @@
 from typing import Union, List, Optional
 from pydantic import BaseModel
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
 from uuid import UUID, uuid4
 
 
 app = FastAPI()
 
 class Item(BaseModel):
-    id: Optional[UUID] = str(uuid4)
+    id: Optional[UUID] = uuid4()
     name: str
     variant: str
     sku: str
@@ -102,8 +103,10 @@ def increment_item(id: UUID, qty: int):
 
 # update field/description of product
 @app.put("/api/v1/items/{id}")
-def update_item(id: UUID, item: Item):
-    return
+def update_item(id: int, item: Item):
+    update_item_encoded = jsonable_encoder(item)
+    db[id] = update_item_encoded
+    return update_item_encoded
 
 # search db
 @app.get("/api/vi/items/db")
